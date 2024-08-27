@@ -1,9 +1,24 @@
-import { createServer } from "http";
 import { Server } from "socket.io";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const httpServer = createServer();
+//in module es we have to there is no __dirname function so we have to use the fileURLtoPath and convert it into usable
+//if we are using the normal default we dont have to add all these just give the __dirname in the path.join()
 
-const io = new Server(httpServer, {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const port = process.env.PORT || 3500;
+const app = express();
+
+app.use(express.static(path.join(__dirname, "public")));
+
+const expressServer = app.listen(port, () => {
+  console.log(`listening on port ${port}`);
+});
+
+const io = new Server(expressServer, {
   cors: {
     origin:
       process.env.NODE_ENV === "production"
@@ -19,5 +34,3 @@ io.on("connection", (socket) => {
     io.emit("message", `${socket.id.substring(0, 5)}: ${data}`);
   });
 });
-
-httpServer.listen(3500, () => console.log("Listening to port 3500"));
