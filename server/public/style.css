@@ -124,6 +124,9 @@ button {
 }
 
 @media (max-width: 600px) {
+  body {
+    min-height: 100%;
+  }
   form {
     flex-flow: column nowrap;
     align-items: stretch;
@@ -138,8 +141,11 @@ button {
     width: 100%;
   }
 
-  .post--left,
+  .post--left {
+    width: 60%;
+  }
+
   .post--right {
-    width: 100%;
+    width: 60%;
   }
 }
