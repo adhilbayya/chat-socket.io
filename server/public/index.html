@@ -15,28 +15,30 @@
     <!-- //(defer) does'nt load js until the dom is loaded -->
   </head>
   <body>
-    <form class="form-join">
-      <input
-        type="text"
-        id="name"
-        placeholder="Your name"
-        maxlength="8"
-        required
-      />
-      <input type="text" id="room" placeholder="Room ID" size="5" required />
-      <button id="join">Join</button>
-    </form>
+    <main>
+      <form class="form-join">
+        <input
+          type="text"
+          id="name"
+          placeholder="Your name"
+          maxlength="8"
+          size="5"
+          required
+        />
+        <input type="text" id="room" placeholder="Room ID" size="5" required />
+        <button id="join">Join</button>
+      </form>
+      <p class="user-list"></p>
 
-    <ul class="chat-display"></ul>
+      <ul class="chat-display"></ul>
 
-    <p class="user-list"></p>
+      <!-- <p class="room-list"></p> -->
 
-    <p class="room-list"></p>
-
-    <p class="activity"></p>
-    <form class="form-send">
-      <input type="text" placeholder="Your message" id="message" />
-      <button>send</button>
-    </form>
+      <p class="activity"></p>
+      <form class="form-send">
+        <input type="text" placeholder="Your message" id="message" />
+        <button type="submit">send</button>
+      </form>
+    </main>
   </body>
 </html>

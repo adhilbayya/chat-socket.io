@@ -3,14 +3,14 @@ const socket = io("ws://localhost:3500");
 const activity = document.querySelector(".activity");
 const msgInput = document.querySelector("#message");
 const nameInput = document.querySelector("#name");
-const roomId = document.querySelector("#room");
+const chatRoom = document.querySelector("#room");
 const usersList = document.querySelector(".user-list");
 const roomList = document.querySelector(".room-list");
 const chatDisplay = document.querySelector(".chat-display");
 
 const sendMessage = (e) => {
   e.preventDefault();
-  if (roomId.value && msgInput.value && nameInput.value) {
+  if (chatRoom.value && msgInput.value && nameInput.value) {
     socket.emit("message", {
       name: nameInput.value,
       text: msgInput.value,
@@ -22,10 +22,10 @@ const sendMessage = (e) => {
 
 const enterRoom = (e) => {
   e.preventDefault();
-  if (nameInput.value && roomId.value) {
-    socket.emit("message", {
+  if (nameInput.value && chatRoom.value) {
+    socket.emit("enterRoom", {
       name: nameInput.value,
-      room: roomId.value,
+      room: chatRoom.value,
     });
   }
 };
@@ -33,6 +33,10 @@ const enterRoom = (e) => {
 document.querySelector(".form-join").addEventListener("submit", enterRoom);
 
 document.querySelector(".form-send").addEventListener("submit", sendMessage);
+
+msgInput.addEventListener("keypress", () => {
+  socket.emit("activity", nameInput.value);
+});
 
 socket.on("message", (data) => {
   activity.textContent = "";
@@ -43,7 +47,7 @@ socket.on("message", (data) => {
   if (name !== nameInput.value && name !== "Admin")
     li.className = "post post--right";
 
-  if (name === "Admin") {
+  if (name !== "Admin") {
     li.innerHTML = `<div class="post--header ${
       name === nameInput.value ? "post--header--user" : "post--header--reply"
     }">
@@ -58,10 +62,6 @@ socket.on("message", (data) => {
   chatDisplay.scrollTop = chatDisplay.scrollHeight;
 });
 
-input.addEventListener("keypress", () => {
-  socket.emit("activity", socket.id.substring(0, 5));
-});
-
 let activityTimer;
 socket.on("activity", (name) => {
   activity.textContent = `${name} is typing....`;
@@ -73,10 +73,18 @@ socket.on("activity", (name) => {
   }, 1000);
 });
 
-const showUsers = (users) => {
+socket.on("userList", ({ users }) => {
+  showUsers(users);
+});
+
+socket.on("roomList", ({ rooms }) => {
+  showRooms(rooms);
+});
+
+function showUsers(users) {
   usersList.textContent = "";
   if (users) {
-    usersList.innerHTML = `<em>Users in ${roomId.value}:</em>`;
+    usersList.innerHTML = `<em>Users in ${chatRoom.value}:</em>`;
     users.forEach((user, i) => {
       usersList.textContent += ` ${user.name}`;
       if (users.length > 1 && i !== users.length - 1) {
@@ -84,12 +92,12 @@ const showUsers = (users) => {
       }
     });
   }
-};
+}
 
-const showRooms = (rooms) => {
+function showRooms(rooms) {
   roomList.textContent = "";
   if (rooms) {
-    roomList.innerHTML = `<em>Active rooms:</em>`;
+    roomList.innerHTML = "<em>Active Rooms:</em>";
     rooms.forEach((room, i) => {
       roomList.textContent += ` ${room}`;
       if (rooms.length > 1 && i !== rooms.length - 1) {
@@ -97,4 +105,4 @@ const showRooms = (rooms) => {
       }
     });
   }
-};
+}

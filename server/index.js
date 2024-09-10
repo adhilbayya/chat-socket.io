@@ -68,14 +68,14 @@ io.on("connection", (socket) => {
 
     socket.broadcast
       .to(user.room)
-      .emit("message", `${user.name} has joined the room`);
+      .emit("message", buildMsg(ADMIN, `${user.name} has joined the room`));
 
     io.to(user.room).emit("userList", {
-      user: getUsersInRoom(user.room),
+      users: getUsersInRoom(user.room),
     });
 
     io.emit("roomList", {
-      room: getAllActiveRoom(),
+      rooms: getAllActiveRooms(),
     });
   });
 
@@ -94,7 +94,7 @@ io.on("connection", (socket) => {
       });
 
       io.emit("roomList", {
-        room: getAllActiveRoom(),
+        rooms: getAllActiveRooms(),
       });
     }
 
@@ -120,7 +120,7 @@ const buildMsg = (name, text) => {
   return {
     name,
     text,
-    time: new Intl.DateTimeFormat("defalt", {
+    time: new Intl.DateTimeFormat("default", {
       hour: "numeric",
       minute: "numeric",
       second: "numeric",
@@ -128,27 +128,27 @@ const buildMsg = (name, text) => {
   };
 };
 
-const activateUser = (name, room, id) => {
-  const user = { name, room, id };
+function activateUser(id, name, room) {
+  const user = { id, name, room };
   UserState.setUsers([
     ...UserState.users.filter((user) => user.id !== id),
     user,
   ]);
   return user;
-};
+}
 
-const userLeavesApp = (id) => {
-  UserState.setUsers([UserState.users.filter((user) => user.id !== id)]);
-};
+function userLeavesApp(id) {
+  UserState.setUsers(UserState.users.filter((user) => user.id !== id));
+}
 
-const getUser = (id) => {
+function getUser(id) {
   return UserState.users.find((user) => user.id === id);
-};
+}
 
-const getUsersInRoom = (room) => {
+function getUsersInRoom(room) {
   return UserState.users.filter((user) => user.room === room);
-};
+}
 
-const getAllActiveRoom = () => {
+function getAllActiveRooms() {
   return Array.from(new Set(UserState.users.map((user) => user.room)));
-};
+}
