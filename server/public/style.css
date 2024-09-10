@@ -1,6 +1,7 @@
 * {
   margin: 0;
   padding: 0;
+  min-height: 1vh;
   box-sizing: border-box;
   font-size: 1rem;
   font-family: Arial, Helvetica, sans-serif;
@@ -120,4 +121,25 @@ button {
 
 .activity {
   font-style: italic;
+}
+
+@media (max-width: 600px) {
+  form {
+    flex-flow: column nowrap;
+    align-items: stretch;
+  }
+
+  input {
+    max-width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .post--left,
+  .post--right {
+    width: 100%;
+  }
 }
